@@ -10,6 +10,7 @@ public class UserUI {
     Scanner sc=new Scanner(System.in);
     private UserService userService;
     private MainMenuUI mainMenuUI;
+   private UI ui;
     public void setMainMenuUI(MainMenuUI mainMenuUI) {
         this.mainMenuUI = mainMenuUI;
     }
@@ -140,5 +141,9 @@ public class UserUI {
             user.setEmail(newEmail);
         }
         return user;
+    }
+
+    public void setUi(UI ui) {
+        this.ui = ui;
     }
 }

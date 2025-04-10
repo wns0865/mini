@@ -7,26 +7,14 @@ import java.util.*;
 public class MainMenuUI {
     static Scanner sc = new Scanner(System.in);
     private UserService userService;
-    private GameUI gameUI;
-    private UserUI userUI;
+    private UI ui;
 
-    public MainMenuUI(UserService userService, GameUI gameUI, UserUI userUI) {
-        this.userService = userService;
-        this.gameUI = gameUI;
-        this.userUI = userUI;
-    }
-    public void setUserService(UserService userService) {
+    public MainMenuUI(UserService userService) {
         this.userService = userService;
     }
 
-    public void setGameUI(GameUI gameUI) {
-        this.gameUI = gameUI;
-    }
-
-    public void setUserUI(UserUI userUI) {
-        this.userUI = userUI;
-    }
-    public MainMenuUI() {
+    public void setMediator(UI ui) {
+        this.ui = ui;
     }
 
     public void start() {
@@ -42,13 +30,13 @@ public class MainMenuUI {
             sc.nextLine();
             switch (choice) {
                 case 1:
-                    userUI.startLogin();
+                    ui.startLogin();
                     if (userService.isLoggedIn()) {
                         showMainMenu();
                     }
                     break;
                 case 2:
-                    userUI.startRegister();
+                    ui.startRegister();
                     if (userService.isLoggedIn()) {
                         showMainMenu();
                     }
@@ -78,13 +66,13 @@ public class MainMenuUI {
             sc.nextLine();
             switch (choice) {
                 case 1:
-                    gameUI.showGameMenu();
+                    ui.gameMenu();
                     break;
                 case 2:
-                    userUI.userMenu();
+                    ui.userMenu();
                     break;
                 case 0:
-                    userUI.logout();
+                    ui.logout();
                     loggedIn = false;
                     System.out.println("로그아웃 되었습니다.");
                     start();

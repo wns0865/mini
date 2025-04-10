@@ -7,57 +7,63 @@ import java.util.*;
 public class MainMenuUI {
     static Scanner sc = new Scanner(System.in);
     private UserService userService;
-    private Scanner scanner;
     private GameUI gameUI;
     private UserUI userUI;
 
+    public MainMenuUI(UserService userService, GameUI gameUI, UserUI userUI) {
+        this.userService = userService;
+        this.gameUI = gameUI;
+        this.userUI = userUI;
+    }
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setGameUI(GameUI gameUI) {
+        this.gameUI = gameUI;
+    }
+
+    public void setUserUI(UserUI userUI) {
+        this.userUI = userUI;
+    }
     public MainMenuUI() {
-    }
-
-    public MainMenuUI(UserService userService, Scanner scanner, GameUI gameUI, UserUI userUI) {
-        this.userService = userService;
-        this.scanner = scanner;
-        this.gameUI = gameUI;
-        this.userUI = userUI;
-    }
-
-    public MainMenuUI(UserService userService, UserUI userUI, GameUI gameUI) {
-        this.userService = userService;
-        this.userUI = userUI;
-        this.gameUI = gameUI;
     }
 
     public void start() {
         boolean running = true;
+        while (running) {
+            System.out.println("\n===== 수학 게임 프로그램 =====");
+            System.out.println("1. 로그인");
+            System.out.println("2. 회원가입");
+            System.out.println("0. 종료");
+            System.out.print("선택: ");
 
-        System.out.println("\n===== 수학 게임 프로그램 =====");
-        System.out.println("1. 로그인");
-        System.out.println("2. 회원가입");
-        System.out.println("0. 종료");
-        System.out.print("선택: ");
-
-        int choice = getIntInput();
-
-        switch (choice) {
-            case 1:
-                userUI.startLogin();
-                break;
-            case 2:
-                userUI.startRegister();
-                if (userService.isLoggedIn()) {
-                    showMainMenu();
-                }
-                break;
-            case 0:
-                running = false;
-                System.out.println("프로그램을 종료합니다.");
-                break;
-            default:
-                System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    userUI.startLogin();
+                    if (userService.isLoggedIn()) {
+                        showMainMenu();
+                    }
+                    break;
+                case 2:
+                    userUI.startRegister();
+                    if (userService.isLoggedIn()) {
+                        showMainMenu();
+                    }
+                    break;
+                case 0:
+                    running = false;
+                    System.out.println("프로그램을 종료합니다.");
+                    break;
+                default:
+                    System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
+            }
         }
 
     }
-    private void showMainMenu() {
+    public void showMainMenu() {
         boolean loggedIn = true;
 
         while (loggedIn && userService.isLoggedIn()) {
@@ -68,8 +74,8 @@ public class MainMenuUI {
             System.out.println("0. 로그아웃");
             System.out.print("선택: ");
 
-            int choice = getIntInput();
-
+            int choice = sc.nextInt();
+            sc.nextLine();
             switch (choice) {
                 case 1:
                     gameUI.showGameMenu();
@@ -87,10 +93,6 @@ public class MainMenuUI {
                     System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
             }
         }
-    }
-
-    private int getIntInput() {
-        return sc.nextInt();
     }
 }
 

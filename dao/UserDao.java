@@ -4,6 +4,7 @@ import mini.model.User;
 
 import java.io.*;
 import java.util.*;
+
 public class UserDao {
     private final String filePath = "C:\\Temp\\MiniProject\\Users\\users.txt";
 
@@ -25,26 +26,39 @@ public class UserDao {
             }
         }
     }
+
     public boolean save(User user) {
         if (findById(user.getId()) != null) {
             return update(user);
         }
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath, true))) {
+        OutputStreamWriter writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(filePath, true));
             writer.write(user.toString());
             writer.write(System.lineSeparator());
             return true;
         } catch (IOException e) {
             System.err.println("사용자 저장 실패: " + e.getMessage());
             return false;
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.err.println("저장 시 파일 닫기 실패: " + e.getMessage());
+                }
+            }
         }
     }
 
     public boolean update(User user) {
         List<User> users = findAll();
         boolean found = false;
+        OutputStreamWriter writer = null;
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath))) {
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(filePath));
             for (User existingUser : users) {
                 if (existingUser.getId().equals(user.getId())) {
                     writer.write(user.toString());
@@ -58,32 +72,52 @@ public class UserDao {
         } catch (IOException e) {
             System.err.println("사용자 업데이트 실패: " + e.getMessage());
             return false;
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.err.println("업데이트 시 파일 닫기 실패: " + e.getMessage());
+                }
+            }
         }
     }
 
-    public boolean delete(String userId) {
+    public void delete(User userToDelete) {
+        String userId = userToDelete.getId();
         List<User> users = findAll();
-        boolean found = false;
+        OutputStreamWriter writer = null;
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath))) {
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(filePath));
             for (User user : users) {
                 if (!user.getId().equals(userId)) {
                     writer.write(user.toString());
                     writer.write(System.lineSeparator());
-                } else {
-                    found = true;
                 }
             }
-            return found;
         } catch (IOException e) {
             System.err.println("사용자 삭제 실패: " + e.getMessage());
-            return false;
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.err.println("삭제 시 파일 닫기 실패: " + e.getMessage());
+                }
+            }
         }
     }
 
     public User findById(String userId) {
-        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(filePath));
-             BufferedReader reader = new BufferedReader(isr)) {
+        FileInputStream fis = null;
+        InputStreamReader isr = null;
+        BufferedReader reader = null;
+
+        try {
+            fis = new FileInputStream(filePath);
+            isr = new InputStreamReader(fis);
+            reader = new BufferedReader(isr);
             String line;
             while ((line = reader.readLine()) != null) {
                 User user = User.fromString(line);
@@ -93,14 +127,28 @@ public class UserDao {
             }
         } catch (IOException e) {
             System.err.println("사용자 조회 실패: " + e.getMessage());
+        } finally {
+            try {
+                if (reader != null) reader.close();
+                if (isr != null) isr.close();
+                if (fis != null) fis.close();
+            } catch (IOException e) {
+                System.err.println("조회 시 파일 닫기 실패: " + e.getMessage());
+            }
         }
         return null;
     }
 
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(filePath));
-             BufferedReader reader = new BufferedReader(isr)) {
+        FileInputStream fis = null;
+        InputStreamReader isr = null;
+        BufferedReader reader = null;
+
+        try {
+            fis = new FileInputStream(filePath);
+            isr = new InputStreamReader(fis);
+            reader = new BufferedReader(isr);
             String line;
             while ((line = reader.readLine()) != null) {
                 User user = User.fromString(line);
@@ -110,8 +158,15 @@ public class UserDao {
             }
         } catch (IOException e) {
             System.err.println("사용자 목록 조회 실패: " + e.getMessage());
+        } finally {
+            try {
+                if (reader != null) reader.close();
+                if (isr != null) isr.close();
+                if (fis != null) fis.close();
+            } catch (IOException e) {
+                System.err.println("목록 조회 시 파일 닫기 실패: " + e.getMessage());
+            }
         }
         return users;
     }
-
 }

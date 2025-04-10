@@ -8,6 +8,8 @@ public class UserService {
     private User currentUser;
 
     public UserService() {
+        this.userDAO = new UserDao();
+        this.currentUser = null;
     }
 
     public UserService(UserDao userDAO, User currentUser) {
@@ -38,5 +40,18 @@ public class UserService {
             return true;
         }
         else return false;
+    }
+
+    public void logOut() {
+        this.currentUser = null;
+    }
+
+    public void update(User user) {
+        userDAO.update(user);
+    }
+
+    public void delete(User user) {
+        userDAO.delete(user);
+
     }
 }

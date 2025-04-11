@@ -31,11 +31,11 @@ public class UIImpl implements UI {
     @Override
     public void logout() {
         userUI.logout();
-        mainMenuUI.start();
+//        mainMenuUI.start();
     }
 
     @Override
-    public void exit() {
+    public void exitApp() {
         this.isRunning=false;
     }
 

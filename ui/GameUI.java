@@ -5,6 +5,7 @@ import mini.model.User;
 import mini.service.GameService;
 import mini.service.UserService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -43,7 +44,7 @@ public class GameUI {
     }
 
     Scanner sc = new Scanner(System.in);
-    public void showGameMenu() {
+    public void showGameMenu()  {
         User user = userService.getCurrentUser();
         System.out.println("==== 게임을 선택하세요 ====");
         System.out.println("1. 사칙연산");

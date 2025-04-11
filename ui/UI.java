@@ -5,7 +5,7 @@ public interface UI {
     void gameMenu();
     void userMenu();
     void logout();
-    void exit();
+    void exitApp();
     void startLogin();
     void startRegister();
     void start();

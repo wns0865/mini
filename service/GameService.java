@@ -23,8 +23,8 @@ public class GameService {
         this.gameResultDao = new GameResultDao();
         this.random = new Random();
     }
-
-//    public GameResult play(User user) {
+//    public GameResult play(int type, User user) {
+//        Scanner scanner = new Scanner(System.in); // Scanner 사용
 //        int r = 0;
 //        int answerCnt = 0;
 //        long startTime = System.currentTimeMillis();
@@ -34,43 +34,50 @@ public class GameService {
 //            int answer = 0;
 //            int userAnswer = 0;
 //            System.out.println("\n" + r + "번 ----");
-//            answer = generateArithmeticQuestion(answer);
-//            System.out.print("정답을 입력하세요 (5초 이내): ");
 //
-//            final AtomicReference<String> inputHolder = new AtomicReference<>(null);
-//            Thread inputThread = new Thread(() -> {
+//            if (type == 1) {
+//                answer = generateArithmeticQuestion();
+//            }
+//            if (type == 2) {
+//                answer = generateEquationQuestion();
+//            }
+//
+//            System.out.print("정답을 입력하세요 (5초 이내): ");
+//            Future<Integer> future = executor.submit(() -> {
 //                try {
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//                    String input = reader.readLine();
-//                    inputHolder.set(input);
-//                } catch (IOException e) {
-//                    // 무시
+//                    if (scanner.hasNextLine()) {
+//                        String line = scanner.nextLine();
+//                        return Integer.parseInt(line);
+//                    }
+//                } catch (Exception e) {
+//                    return null;
 //                }
+//                return null;
 //            });
 //
-//            inputThread.start();
 //            try {
-//                inputThread.join(5000); // 5초 대기
-//
-//                if (inputThread.isAlive()) {
-//                    inputThread.interrupt(); // 입력 스레드 강제 종료
-//                    System.out.println("⏰ 시간 초과! 오답 처리됩니다.");
-//                    continue;
-//                }
-//
-//                String line = inputHolder.get();
-//                if (line == null || line.trim().isEmpty()) {
+//                Integer result = future.get(5, TimeUnit.SECONDS);
+//                if (result == null) {
 //                    System.out.println("잘못된 입력입니다. 오답 처리됩니다.");
 //                    continue;
 //                }
+//                userAnswer = result;
+//            } catch (TimeoutException e) {
+//                System.out.println("⏰ 시간 초과! 오답 처리됩니다.");
+//                future.cancel(true);
+//                // ❗ 예외가 나도 안전하게 입력 버퍼 날리기
+//                try {
+//                    scanner.nextLine(); // 무조건 한 줄 날림
+//                } catch (Exception ignore) {
+//                    // EOF, IndexOutOfBounds 등 무시
+//                }
 //
-//                userAnswer = Integer.parseInt(line.trim());
-//
-//            } catch (Exception e) {
-//                System.out.println("입력 처리 중 오류 발생: " + e.getMessage());
 //                continue;
+//            } catch (Exception e) {
+//                e.printStackTrace();
 //            }
 //
+//            System.out.println(answer);
 //            if (checkArithmeticAnswer(answer, userAnswer)) {
 //                answerCnt++;
 //            }
@@ -78,7 +85,7 @@ public class GameService {
 //
 //        long endTime = System.currentTimeMillis();
 //        double elapsedTimeSeconds = (endTime - startTime) / 1000.0;
-//        return new GameResult(1, user.getId(), user.getName(), answerCnt, elapsedTimeSeconds);
+//        return new GameResult(type, user.getId(), user.getName(), answerCnt, elapsedTimeSeconds);
 //    }
 
 
@@ -98,14 +105,7 @@ public class GameService {
                 answer = generateEquationQuestion();
             }
             System.out.print("정답을 입력하세요 (5초 이내): ");
-            Future<Integer> future = executor.submit(() -> {
-                try {
-                    String line = br.readLine();
-                    return Integer.parseInt(line.trim());
-                } catch (Exception e) {
-                    return null;
-                }
-            });
+            Future<Integer> future = executor.submit(() -> Integer.parseInt(br.readLine()));
 
             try {
                 Integer result = future.get(5, TimeUnit.SECONDS);
@@ -115,8 +115,16 @@ public class GameService {
                 }
                 userAnswer = result;
             } catch (TimeoutException e) {
-                System.out.println("⏰ 시간 초과! 오답 처리됩니다.");
+                System.out.println("⏰ 시간 초과! 오답 처리됩니다.\n Enter를 눌러주세요.");
                 future.cancel(true);
+                try {
+                    while (br.ready()) {
+                        br.read();
+                    }
+                } catch (IOException ioe) {
+                    // 예외 처리
+                }
+
                 continue;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -253,7 +261,7 @@ public class GameService {
         List<GameResult> list1=gameResultDao.getRank(1);
         List<GameResult> list2=gameResultDao.getRank(2);
         System.out.println("============ 사칙연산 ============");
-        System.out.println("등수      이름        점수      시간");
+        System.out.println("등수        이름        점수      시간");
         int i=0;
         for (GameResult gameResult1 : list1) {
 
@@ -263,7 +271,7 @@ public class GameService {
         System.out.println("\n");
         i=0;
         System.out.println("============ 방정식 ============");
-        System.out.println("등수      이름        점수      시간");
+        System.out.println("등수        이름        점수      시간");
         for (GameResult gameResult2 : list2) {
             System.out.print(++i+"등 ");
             System.out.println(gameResult2.showRanking());

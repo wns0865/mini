@@ -44,6 +44,8 @@ public class MainMenuUI {
                 case 0:
                     running = false;
                     System.out.println("프로그램을 종료합니다.");
+                    System.out.println("===== 프로그램 종료 =====");
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
@@ -75,7 +77,7 @@ public class MainMenuUI {
                     ui.logout();
                     loggedIn = false;
                     System.out.println("로그아웃 되었습니다.");
-                    start();
+//                    start();
                     break;
                 default:
                     System.out.println("잘못된 선택입니다. 다시 선택해주세요.");

@@ -5,8 +5,6 @@ import mini.service.GameService;
 import mini.service.UserService;
 import mini.ui.*;
 
-import java.util.Scanner;
-
 public class MathApp {
     public void math (){
 
@@ -31,8 +29,6 @@ public class MathApp {
         } catch (Exception e) {
             System.err.println("오류 발생: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            System.out.println("===== 프로그램 종료 =====");
-        }
+    }
     }
 }

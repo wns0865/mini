@@ -23,70 +23,6 @@ public class GameService {
         this.gameResultDao = new GameResultDao();
         this.random = new Random();
     }
-//    public GameResult play(int type, User user) {
-//        Scanner scanner = new Scanner(System.in); // Scanner 사용
-//        int r = 0;
-//        int answerCnt = 0;
-//        long startTime = System.currentTimeMillis();
-//
-//        while (r < 5) {
-//            r++;
-//            int answer = 0;
-//            int userAnswer = 0;
-//            System.out.println("\n" + r + "번 ----");
-//
-//            if (type == 1) {
-//                answer = generateArithmeticQuestion();
-//            }
-//            if (type == 2) {
-//                answer = generateEquationQuestion();
-//            }
-//
-//            System.out.print("정답을 입력하세요 (5초 이내): ");
-//            Future<Integer> future = executor.submit(() -> {
-//                try {
-//                    if (scanner.hasNextLine()) {
-//                        String line = scanner.nextLine();
-//                        return Integer.parseInt(line);
-//                    }
-//                } catch (Exception e) {
-//                    return null;
-//                }
-//                return null;
-//            });
-//
-//            try {
-//                Integer result = future.get(5, TimeUnit.SECONDS);
-//                if (result == null) {
-//                    System.out.println("잘못된 입력입니다. 오답 처리됩니다.");
-//                    continue;
-//                }
-//                userAnswer = result;
-//            } catch (TimeoutException e) {
-//                System.out.println("⏰ 시간 초과! 오답 처리됩니다.");
-//                future.cancel(true);
-//                // ❗ 예외가 나도 안전하게 입력 버퍼 날리기
-//                try {
-//                    scanner.nextLine(); // 무조건 한 줄 날림
-//                } catch (Exception ignore) {
-//                    // EOF, IndexOutOfBounds 등 무시
-//                }
-//
-//                continue;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            System.out.println(answer);
-//            if (checkArithmeticAnswer(answer, userAnswer)) {
-//                answerCnt++;
-//            }
-//        }
-//
-//        long endTime = System.currentTimeMillis();
-//        double elapsedTimeSeconds = (endTime - startTime) / 1000.0;
-//        return new GameResult(type, user.getId(), user.getName(), answerCnt, elapsedTimeSeconds);
-//    }
 
 
     public GameResult play(int type, User user) {
@@ -114,9 +50,11 @@ public class GameService {
                     continue;
                 }
                 userAnswer = result;
-            } catch (TimeoutException e) {
-                System.out.println("⏰ 시간 초과! 오답 처리됩니다.\n Enter를 눌러주세요.");
+            }
+            catch (TimeoutException e) {
+                System.out.println("⏰ 시간 초과! 오답 처리됩니다.");
                 future.cancel(true);
+                System.out.println("정답: "+answer+"\nEnter를 눌러주세요");
                 try {
                     while (br.ready()) {
                         br.read();
@@ -126,10 +64,13 @@ public class GameService {
                 }
 
                 continue;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            System.out.println(answer);
+            catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+
+            }
+            System.out.println("정답: "+answer);
             if (checkArithmeticAnswer(answer, userAnswer)) {
                 answerCnt++;
             }
@@ -154,7 +95,7 @@ public class GameService {
                 break;
             case 1:
                 operator = "-";
-                // 음수 결과를 피하기 위해 큰 수에서 작은 수를 빼도록 조정
+                // 큰 수에서 작은 수를 빼도록 조정
                 if (num1 < num2) {
                     int temp = num1;
                     num1 = num2;
@@ -170,7 +111,7 @@ public class GameService {
                 answer = num1 * num2;
                 break;
             default:
-                operator = "/";
+                operator = "÷";
                 // 나눗셈은 나누어 떨어지는 경우만 생성
                 num2 = random.nextInt(30) + 1;
                 answer = random.nextInt(10) + 1;
@@ -235,28 +176,6 @@ public class GameService {
     }
 
 
-    public boolean checkEquationAnswer(String question, String userAnswer) {
-        try {
-            // 예: "2x + 3 = 7" 에서 x = 2
-            int x = Integer.parseInt(userAnswer);
-
-            String[] parts = question.split("=");
-            String equation = parts[0].trim();
-            int result = Integer.parseInt(parts[1].trim());
-
-            // 계수 a 추출 (예: "2x + 3"에서 2)
-            String[] termParts = equation.split("x");
-            int a = Integer.parseInt(termParts[0].trim());
-
-            // 상수항 b 추출 (예: "+ 3"에서 3)
-            int b = Integer.parseInt(termParts[1].trim());
-
-            return (a * x + b) == result;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public void getRank() {
         List<GameResult> list1=gameResultDao.getRank(1);
         List<GameResult> list2=gameResultDao.getRank(2);
@@ -267,6 +186,7 @@ public class GameService {
 
             System.out.print(++i+"등 ");
             System.out.println(gameResult1.showRanking());
+
         }
         System.out.println("\n");
         i=0;
@@ -279,14 +199,4 @@ public class GameService {
         System.out.println("\n\n");
     }
 
-//    public boolean checkArithmeticAnswer(String question, String userAnswer) {
-//        try {
-//            String[] parts = question.split("=");
-//            int correctAnswer = Integer.parseInt(parts[1]);
-//            int providedAnswer = Integer.parseInt(userAnswer);
-//            return correctAnswer == providedAnswer;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
 }

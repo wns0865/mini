@@ -7,6 +7,5 @@ public interface UI {
     void logout();
     void startLogin();
     void startRegister();
-    void start();
 
 }

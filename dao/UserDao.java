@@ -1,5 +1,6 @@
 package mini.dao;
 
+import mini.model.GameResult;
 import mini.model.User;
 
 import java.io.*;
@@ -69,6 +70,21 @@ public class UserDao {
                 }
                 writer.write(System.lineSeparator());
             }
+            //랭킹 정보 업데이트
+            if (gameResultDao.getScore(1, user.getId()) != null) {
+                //기존의 랭킹 가져옴
+                GameResult gameResult1 = gameResultDao.getScore(1, user.getId());
+                // 이름만 업데이트
+                gameResult1.setName(user.getName());
+                //변경해서 다시 서장
+                gameResultDao.save(gameResult1);
+            }
+            if (gameResultDao.getScore(2, user.getId()) != null) {
+                GameResult gameResult2 = gameResultDao.getScore(2, user.getId());
+                gameResult2.setName(user.getName());
+                gameResultDao.save(gameResult2);
+
+            }
             return found;
         } catch (IOException e) {
             System.err.println("사용자 업데이트 실패: " + e.getMessage());
@@ -85,8 +101,8 @@ public class UserDao {
     }
 
     public void delete(User userToDelete) {
-        gameResultDao.delete(1,userToDelete.getId());
-        gameResultDao.delete(2,userToDelete.getId());
+        gameResultDao.delete(1, userToDelete.getId());
+        gameResultDao.delete(2, userToDelete.getId());
         String userId = userToDelete.getId();
         List<User> users = findAll();
         OutputStreamWriter writer = null;

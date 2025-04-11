@@ -43,10 +43,7 @@ public class UIImpl implements UI {
     public void startRegister() {
         userUI.startRegister();
     }
+    
 
-    @Override
-    public void start() {
-        mainMenuUI.start();
-    }
 
 }

@@ -19,44 +19,6 @@ public class MainMenuUI {
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public void start() {
-        try {
-            while (true) {
-                System.out.println("\n===== 수학 게임 프로그램 =====");
-                System.out.println("1. 로그인");
-                System.out.println("2. 회원가입");
-                System.out.println("0. 종료");
-                System.out.print("선택: ");
-
-                int choice = Integer.parseInt(br.readLine());
-//                br.readLine();
-                switch (choice) {
-                    case 1:
-                        ui.startLogin();
-                        if (userService.isLoggedIn()) {
-                            showMainMenu();
-                        }
-                        break;
-                    case 2:
-                        ui.startRegister();
-                        if (userService.isLoggedIn()) {
-                            showMainMenu();
-                        }
-                        break;
-                    case 0:
-                        System.out.println("프로그램을 종료합니다.");
-                        System.out.println("===== 프로그램 종료 =====");
-                        System.exit(0);
-                        break;
-                    default:
-                        System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
     public void showMainMenu() {
         try{
         boolean loggedIn = true;
@@ -88,7 +50,12 @@ public class MainMenuUI {
                     System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
             }
         }
-    } catch (Exception e) {
+    } catch (NumberFormatException e){
+            System.out.println("숫자만 입력해주세요");
+            showMainMenu();
+
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

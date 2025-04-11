@@ -6,7 +6,6 @@ import mini.service.UserService;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class UserUI {
 //    Scanner sc=new Scanner(System.in);
@@ -39,6 +38,9 @@ public class UserUI {
 
                 if (userService.login(id, password)) {
                     System.out.println("로그인 성공!");
+                    if (userService.isLoggedIn()) {
+                        ui.mainMenu();
+                    }
 
                 } else {
                     System.out.println("로그인 실패. 아이디 또는 비밀번호를 확인해주세요.");
@@ -72,6 +74,10 @@ public class UserUI {
             if (userService.register(newUser)) {
                 System.out.println("회원가입 성공! 로그인 됩니다.");
                 userService.login(id, password);
+                if (userService.isLoggedIn()) {
+                    ui.mainMenu();
+                }
+
             } else {
                 System.out.println("회원가입 실패. 이미 존재하는 아이디입니다.");
             }
@@ -85,7 +91,7 @@ public class UserUI {
     public void userMenu() {
         try {
             User user = userService.getCurrentUser();
-            System.out.println("==== 유저 메뉴 ====");
+            System.out.println("\n==== 유저 메뉴 ====");
             System.out.println("1. 유저 정보 수정");
             System.out.println("2. 회원 탈퇴");
             System.out.println("0. 뒤로 가기");
@@ -119,12 +125,16 @@ public class UserUI {
                     }
                     break;
                 case 3:
-                    mainMenuUI.showMainMenu();
+                    ui.mainMenu();
                     break;
                 default:
                     System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
             }
-        } catch (Exception e) {
+        }catch (NumberFormatException e){
+            System.out.println("숫자만 입력해주세요");
+            ui.userMenu();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -142,7 +152,7 @@ public class UserUI {
             System.out.println("현재 이름: " + user.getName());
             System.out.println("현재 이메일: " + user.getEmail());
 
-            System.out.print("새 비밀번호 (Enter 시 변경 안 함): ");
+            System.out.print("\n새 비밀번호 (Enter 시 변경 안 함): ");
             String newPassword = br.readLine();
             if (!newPassword.isBlank()) {
                 user.setPassword(newPassword);

@@ -50,7 +50,7 @@ public class GameUI {
     public void showGameMenu()  {
         try {
             User user = userService.getCurrentUser();
-            System.out.println("==== 게임을 선택하세요 ====");
+            System.out.println("\n ==== 게임을 선택하세요 ====");
             System.out.println("1. 사칙연산");
             System.out.println("2. 방정식");
             System.out.println("3. 랭킹 조회");
@@ -87,7 +87,7 @@ public class GameUI {
                     }
                     break;
                 case 3:
-                    System.out.println("------------ 🏆랭킹🏆 ------------\n");
+                    System.out.println("\n------------ 🏆랭킹🏆 ------------\n");
                     gameService.getRank();
                     showGameMenu();
                     break;
@@ -98,7 +98,11 @@ public class GameUI {
                     System.out.println("잘못된 선택입니다. 다시 선택해주세요.");
 
             }
-        } catch (Exception e) {
+        }catch (NumberFormatException e){
+            System.out.println("숫자만 입력해주세요");
+            ui.gameMenu();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 

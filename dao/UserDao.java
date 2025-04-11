@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 
 public class UserDao {
+    GameResultDao gameResultDao = new GameResultDao();
     private final String filePath = "C:\\Temp\\MiniProject\\Users\\users.txt";
 
     public UserDao() {
@@ -84,11 +85,14 @@ public class UserDao {
     }
 
     public void delete(User userToDelete) {
+        gameResultDao.delete(1,userToDelete.getId());
+        gameResultDao.delete(2,userToDelete.getId());
         String userId = userToDelete.getId();
         List<User> users = findAll();
         OutputStreamWriter writer = null;
 
         try {
+
             writer = new OutputStreamWriter(new FileOutputStream(filePath));
             for (User user : users) {
                 if (!user.getId().equals(userId)) {

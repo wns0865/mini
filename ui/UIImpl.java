@@ -4,7 +4,6 @@ public class UIImpl implements UI {
     private MainMenuUI mainMenuUI;
     private GameUI gameUI;
     private UserUI userUI;
-    private boolean isRunning=true;
 
     public UIImpl(GameUI gameUI, MainMenuUI mainMenuUI, UserUI userUI) {
         this.gameUI = gameUI;
@@ -34,10 +33,6 @@ public class UIImpl implements UI {
 //        mainMenuUI.start();
     }
 
-    @Override
-    public void exitApp() {
-        this.isRunning=false;
-    }
 
     @Override
     public void startLogin() {
@@ -54,7 +49,4 @@ public class UIImpl implements UI {
         mainMenuUI.start();
     }
 
-    public boolean isRunning() {
-        return isRunning;
-    }
 }

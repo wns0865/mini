@@ -1,9 +1,7 @@
-package mini;
+package mini.ui;
 
-import mini.dao.UserDao;
 import mini.service.GameService;
 import mini.service.UserService;
-import mini.ui.*;
 
 public class MathApp {
     public void math (){
@@ -15,10 +13,7 @@ public class MathApp {
         GameUI gameUI = new GameUI(gameService, userService,mainMenuUI);
         UserUI userUI = new UserUI(userService);
 
-
         UI ui = new UIImpl(gameUI,mainMenuUI,userUI);
-
-
         mainMenuUI.setMediator(ui);
         gameUI.setUi(ui);
         userUI.setUi(ui);
